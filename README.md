@@ -8,4 +8,4 @@
 
 ## 结构
 
-![笔记](https://github.com/HoldSworder/note)
+[笔记](https://github.com/HoldSworder/note)
