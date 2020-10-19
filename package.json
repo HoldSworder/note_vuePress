@@ -9,5 +9,8 @@
   },
   "devDependencies": {
     "vuepress": "^1.7.0"
+  },
+  "dependencies": {
+    "vue-router": "3.4.5"
   }
 }

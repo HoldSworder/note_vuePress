@@ -3,7 +3,7 @@
  * @Description  : vueperss config
  * @Autor        : Qzr(z5021996@vip.qq.com)
  * @LastEditors  : Qzr(z5021996@vip.qq.com)
- * @LastEditTime : 2020-10-15 11:07:57
+ * @LastEditTime : 2020-10-16 15:02:53
  */
 
 const path = require('path')
@@ -19,11 +19,9 @@ module.exports = {
 			{ text: 'Note', link: '/note/' },
 			{ text: 'GitHub', link: 'https://github.com/HoldSworder' },
 		],
-		displayAllHeaders: true,
-		sidebar: {
-			'/note': getSliderbar(dirPath),
-		},
-		sidebarDepth: 3,
+    // displayAllHeaders: true, //示所有页面的标题链接
+    // sidebarDepth: 5,
+    sidebar: getSliderbar(dirPath)
 	},
 }
 
@@ -37,55 +35,83 @@ function getSliderbar(filePath) {
 		const stats = fs.statSync(childPath)
     
 		if (stats.isDirectory()) {
-      if (isFileDir(childPath)) {
-        isFileHandle(childPath, item, res)
-			}else {
+      const fildDir = isFileDir(childPath)  // 命中子文件没有文件夹情况 返回文件夹下唯一md文件
+      if ((fildDir !== '') && fildDir) {
+        isFileHandle(fildDir, res)
+      }else {
         const children = getSliderbar(childPath)
         
         if (children.length !== 0) {
           res.push({
             title: item,
+            sidebarDepth: 0,
             children,
           })
         }
       }
-
 		}
 
-		if (stats.isFile()) {
-      isFileHandle(childPath, item, res)
+		if (stats.isFile() && (childPath.slice(-2) === 'md')) {
+      isFileHandle(childPath, res)
 		}
 
     
   }
-  
+
   return res
 }
 
-function isFileHandle(childPath, item, res) {
-  const mdPath = childPath
+function isFileHandle(childPath, res) {
+  const extName = childPath.slice(-2)
+  let noteName = ''
+
+  if(extName !== 'md') return
+  
+  if(!fs.existsSync(childPath)) return 
+
+  let mdPath = childPath
       .slice(childPath.indexOf('docs') + 5).replace(/\\/g, '/')
-      .split('/').slice(0, -1).join('/') + '/'
 
-  const extName = path
-    .extname(item)
-    .toLowerCase()
-    .slice(1)
+  const fileName = mdPath.split('/').slice(-1)[0]
 
-  if (extName.indexOf('md') !== -1) {
-    console.log(mdPath)
-    res.push({
-      path: mdPath,
-      title: mdPath.split('/')[mdPath.length - 2],
-    })
+  if(fileName === 'README.md') {
+    mdPath = mdPath.split('/').slice(0, -1).join('/') + '/'
   }
+  
+  const mdPathArr = mdPath.split('/')
+  
+  if(fileName === 'README.md' || fileName === 'readme.md') { 
+    noteName = mdPathArr[mdPathArr.length - 2]
+  }else {
+    noteName = mdPathArr[mdPathArr.length - 1].slice(0, -3)
+  }
+
+
+  res.push({
+    path: '/' + mdPath,
+    title: noteName
+  })
+
 }
 
 function isFileDir(dirPath) {
-	const dirData = fs.readdirSync(dirPath)
-	if ((dirData.length === 1) && (dirData[0].slice(-2) === 'md')) {
-		return true
-	}
+  if(!fs.existsSync(dirPath)) return 
 
-	return false
+  const dirData = fs.readdirSync(dirPath)
+  let mdFile = ''
+  
+  for (const item of dirData) {
+    const childPath = path.resolve(dirPath, item)
+    const stats = fs.statSync(childPath)
+    
+    if(stats.isDirectory()) {
+      return false
+    }
+
+    if(item.slice(-2) === 'md') {
+      mdFile = childPath
+    }
+  }
+
+	return mdFile
 }
