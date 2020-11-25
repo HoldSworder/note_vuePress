@@ -16,5 +16,4 @@ jobs:
         
       - uses: actions/download-artifact@v2
         with:
-          name: note files
           path: ~/docs/note
