@@ -1,0 +1,3 @@
+[submodule "docs/note"]
+	path = docs/note
+	url = git@github.com:HoldSworder/note.git
