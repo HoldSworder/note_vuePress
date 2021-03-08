@@ -12,8 +12,31 @@ jobs:
   download-code:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
         
-      - uses: actions/download-artifact@v2
+      # - uses: actions/download-artifact@v2
+      #   with:
+      #     path: ~/docs/note
+
+      # 下载 git submodule
+      - name: download and update submodule
+        uses: srt32/git-actions@v0.0.3
         with:
-          path: ~/docs/note
+          args: |
+              git submodule update --init --recursive
+              git submodule foreach git pull
+
+       # 使用 node:10
+      - name: use Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+
+      # npm install
+      - name: npm install and build
+        run: |
+          npm install
+          npm run build
+        env:
+          CI: true
