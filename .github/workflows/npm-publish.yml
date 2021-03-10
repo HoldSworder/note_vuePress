@@ -56,3 +56,4 @@ jobs:
           # REMOTE_PORT: ${{ secrets.ALIYUN_PORT }}
           SOURCE: "docs/.vuepress/dist/"
           TARGET: "/srv/www/note-press"
+          AFTER_COMMAND: "nginx -s reload"
