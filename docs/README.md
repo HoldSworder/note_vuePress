@@ -1,6 +1,6 @@
 ---
 home: true
-heroText: Qzr's Note test
+heroText: Qzr's Note test1
 tagline: Hello, my friend!
 actionText: 详情 →
 actionLink: /note/
