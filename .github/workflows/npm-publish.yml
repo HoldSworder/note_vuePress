@@ -20,10 +20,16 @@ jobs:
       #     path: ~/docs/note
 
       # 下载 git submodule
-      - name: download and update submodule
+      - name: download submodule
         uses: srt32/git-actions@v0.0.3
         with:
-          args: (git submodule update --init --recursive ; git submodule foreach git pull)
+          args: git submodule update --init --recursive
+
+      # 更新 git submodule
+      - name: update submodule    
+        uses: srt32/git-actions@v0.0.3
+        with:
+          args: git submodule foreach git pull
 
        # 使用 node:10
       - name: use Node.js 10.x
