@@ -37,6 +37,18 @@ jobs:
       - name: npm install and build
         run: |
           npm install
-          npm run build
+          npm run docs:build
         env:
           CI: true
+          
+      # Deploy
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@v2.0.8
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.ALIYUN_TOKEN }}
+          ARGS: "-avz --delete"
+          REMOTE_HOST: ${{ secrets.ALIYUN_HOST }}
+          REMOTE_USER: "root"
+          # REMOTE_PORT: ${{ secrets.ALIYUN_PORT }}
+          SOURCE: "docs/.vuepress/dist/"
+          TARGET: "/srv/www/note-press"
